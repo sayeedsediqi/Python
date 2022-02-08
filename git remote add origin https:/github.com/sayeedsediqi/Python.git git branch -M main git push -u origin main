@@ -1,0 +1,192 @@
+#Sayeed Sediqi; January 2022;
+import tkinter
+import array as arr
+import math
+mainexpression=""
+############################################################
+def errorCheck(strin):
+    if strin[0]!="1" and strin[0]!="2" and strin[0]!="3" and strin[0]!="4" and strin[0]!="5" and strin[0]!="6" and strin[0]!="7" and strin[0]!="8" and strin[0]!="9" and strin[0]!="0":
+        return True
+    length=len(strin)
+    if strin[length-1]=="+" or strin[length-1]=="-" or strin[length-1]=="*" or strin[length-1]=="/":
+        return True
+    return False
+def calcNum(calc_str):
+    num_array=arr.array('d',[])
+    strlen=len(calc_str)
+    tempstr=""
+    for i in range(strlen):
+        if calc_str[i]== "+":
+            num_array.append(float(tempstr))
+            tempstr=""
+        elif calc_str[i]== "/":
+            num_array.append(float(tempstr))
+            tempstr=""
+        elif calc_str[i]== "-":
+            num_array.append(float(tempstr))
+            tempstr=""
+        elif calc_str[i]== "*":
+            num_array.append(float(tempstr))
+            tempstr=""
+        else:
+            tempstr+=calc_str[i]
+    num_array.append(float(tempstr))
+    return num_array
+#############################################################
+def getOps(calc_str):
+    opp_str=""
+    strlen=len(calc_str)
+    for i in range(strlen):
+        if calc_str[i]== "+":
+            opp_str+=calc_str[i]
+        if calc_str[i]== "/":
+            opp_str+=calc_str[i]
+        if calc_str[i]== "-":
+            opp_str+=calc_str[i]
+        if calc_str[i]== "*":
+            opp_str+=calc_str[i]
+    return opp_str
+#############################################################
+def calcString(calc_str):
+    if(errorCheck(calc_str)):
+        return "Error"
+    num_arr=calcNum(calc_str)
+    op_str=getOps(calc_str)
+    oplen=len(op_str)
+    post_md=arr.array('d',[])
+    temp=0.0;
+    for i in range(oplen):
+        if op_str[i]=="+" or op_str[i]=="-":
+            if temp==0:
+                post_md.append(num_arr[i])
+            else:
+                post_md.append(temp)
+                temp=0.0;
+        elif op_str[i]=="*":
+            if temp==0.0:
+                temp=num_arr[i]*num_arr[i+1]
+            else:
+                temp=temp*num_arr[i+1]
+        else:
+            if temp==0.0:
+                temp=num_arr[i]/num_arr[i+1]
+            else:
+                temp=temp/num_arr[i+1]
+    if temp!=0.0:
+        post_md.append(temp)
+
+    as_str=""
+    for i in range(oplen):
+        if op_str[i]=="+" or op_str[i]=="-":
+            as_str+=op_str[i]
+    aslen=len(as_str)
+    temp=0.0;
+    if aslen==oplen:
+        post_md=num_arr
+    if aslen==0:
+        return post_md[0]
+    for i in range(aslen):
+        if as_str[i]=="+":
+            if temp==0.0:
+                temp=post_md[i]+post_md[i+1]
+            else:
+                temp=temp+post_md[i+1]
+        if as_str[i]=="-":
+            if temp==0.0:
+                temp=post_md[i]-post_md[i+1]
+            else:
+                temp=temp-post_md[i+1]
+    return temp
+#############################################################
+
+def numpressed(num):
+    global mainexpression
+    mainexpression+=str(num)
+    dispexp.set(mainexpression)
+def oppressed(strop):
+    global mainexpression
+    mainexpression+=strop
+    dispexp.set(mainexpression)
+def equalpressed():
+    global mainexpression
+    sol=calcString(mainexpression)
+    dispexp.set(sol)
+    mainexpression=str(sol)
+def clearpressed():
+    global mainexpression
+    mainexpression=""
+    dispexp.set("")
+def logpress():
+    global mainexpression
+    for i in mainexpression:
+        if i!="0" and i!="1" and i!="2" and i!="3" and i!="4" and i!="5" and i!="6" and i!="7" and i!="8" and i!="9":
+            dispexp.set("Error")
+            return
+    dispexp.set(str(math.log(float(mainexpression))))
+def sinpress():
+    global mainexpression
+    for i in mainexpression:
+        if i!="0" and i!="1" and i!="2" and i!="3" and i!="4" and i!="5" and i!="6" and i!="7" and i!="8" and i!="9":
+            dispexp.set("Error")
+            return
+    dispexp.set(str(math.sin(float(mainexpression))))
+def cospress():
+    global mainexpression
+    for i in mainexpression:
+        if i!="0" and i!="1" and i!="2" and i!="3" and i!="4" and i!="5" and i!="6" and i!="7" and i!="8" and i!="9":
+            dispexp.set("Error")
+            return
+    dispexp.set(str(math.cos(float(mainexpression))))
+
+##############################################################
+
+if __name__=="__main__":
+    disp=tkinter.Tk()
+    disp.configure(background="grey")
+    disp.title("SimpleCalc")
+    disp.geometry("800x600")
+    disp.resizable(0,0)
+    dispexp=tkinter.StringVar()
+    valdisp=tkinter.Entry(disp,textvariable=dispexp,bg='black',fg='lightblue',font=('Helvetica 20 bold'))
+    valdisp.place(x=0,y=0,width=800,height=100)
+    button1=tkinter.Button(disp, text='1',fg='white',bg='blue',command=lambda: numpressed(1),font=('Helvetica 20 bold'),activebackground='lightblue',activeforeground='darkgreen')
+    button1.place(x=0,y=100,width=200,height=100)
+    button2=tkinter.Button(disp,text='2',fg='white',bg='blue',command=lambda: numpressed(2),font=('Helvetica 20 bold'),activebackground='lightblue',activeforeground='darkgreen')
+    button2.place(x=200,y=100,width=200,height=100)
+    button3=tkinter.Button(disp,text='3',fg='white',bg='blue',command=lambda: numpressed(3),font=('Helvetica 20 bold'),activebackground='lightblue',activeforeground='darkgreen')
+    button3.place(x=400,y=100,width=200,height=100)
+    button4=tkinter.Button(disp,text='4',fg='white',bg='blue',command=lambda: numpressed(4),font=('Helvetica 20 bold'),activebackground='lightblue',activeforeground='darkgreen')
+    button4.place(x=0,y=200,width=200,height=100)
+    button5=tkinter.Button(disp,text='5',fg='white',bg='blue',command=lambda: numpressed(5),font=('Helvetica 20 bold'),activebackground='lightblue',activeforeground='darkgreen')
+    button5.place(x=200,y=200,width=200,height=100)
+    button6=tkinter.Button(disp,text='6',fg='white',bg='blue',command=lambda: numpressed(6),font=('Helvetica 20 bold'),activebackground='lightblue',activeforeground='darkgreen')
+    button6.place(x=400,y=200,width=200,height=100)
+    button7=tkinter.Button(disp,text='7',fg='white',bg='blue',command=lambda: numpressed(7),font=('Helvetica 20 bold'),activebackground='lightblue',activeforeground='darkgreen')
+    button7.place(x=0,y=300,width=200,height=100)
+    button8=tkinter.Button(disp,text='8',fg='white',bg='blue',command=lambda: numpressed(8),font=('Helvetica 20 bold'),activebackground='lightblue',activeforeground='darkgreen')
+    button8.place(x=200,y=300,width=200,height=100)
+    button9=tkinter.Button(disp,text='9',fg='white',bg='blue',command=lambda: numpressed(9),font=('Helvetica 20 bold'),activebackground='lightblue',activeforeground='darkgreen')
+    button9.place(x=400,y=300,width=200,height=100)
+    button0=tkinter.Button(disp,text='0',fg='white',bg='blue',command=lambda: numpressed(0),font=('Helvetica 20 bold'),activebackground='lightblue',activeforeground='darkgreen')
+    button0.place(x=200,y=400,width=200,height=100)
+    buttondec=tkinter.Button(disp,text='.',fg='white',bg='blue',command=lambda: oppressed("."),font=('Helvetica 20 bold'),activebackground='lightblue',activeforeground='darkgreen')
+    buttondec.place(x=0,y=400,width=200,height=100)
+    buttonclear=tkinter.Button(disp,text='C',fg='white',bg='blue',command=lambda: clearpressed(),font=('Helvetica 20 bold'),activebackground='lightblue',activeforeground='darkgreen')
+    buttonclear.place(x=400,y=400,width=200,height=100)
+    buttonplus=tkinter.Button(disp,text='+',fg='white',bg='blue',command=lambda: oppressed("+"),font=('Helvetica 20 bold'),activebackground='lightblue',activeforeground='darkgreen')
+    buttonplus.place(x=600,y=100,width=200,height=100)
+    buttonmin=tkinter.Button(disp,text='-',fg='white',bg='blue',command=lambda: oppressed("-"),font=('Helvetica 20 bold'),activebackground='lightblue',activeforeground='darkgreen')
+    buttonmin.place(x=600,y=200,width=200,height=100)
+    buttonmult=tkinter.Button(disp,text='*',fg='white',bg='blue',command=lambda: oppressed("*"),font=('Helvetica 20 bold'),activebackground='lightblue',activeforeground='darkgreen')
+    buttonmult.place(x=600,y=300,width=200,height=100)
+    buttondiv=tkinter.Button(disp,text='/',fg='white',bg='blue',command=lambda: oppressed("/"),font=('Helvetica 20 bold'),activebackground='lightblue',activeforeground='darkgreen')
+    buttondiv.place(x=600,y=400,width=200,height=100)
+    buttoneq=tkinter.Button(disp,text='=',fg='white',bg='blue',command=lambda: equalpressed(),font=('Helvetica 20 bold'),activebackground='lightblue',activeforeground='darkgreen')
+    buttoneq.place(x=0,y=500,width=200,height=100)
+    buttonlog=tkinter.Button(disp,text='ln()',fg='white',bg='blue',command=lambda: logpress(),font=('Helvetica 20 bold'),activebackground='lightblue',activeforeground='darkgreen')
+    buttonlog.place(x=200,y=500,width=200,height=100)
+    buttonsin=tkinter.Button(disp,text='sin()',fg='white',bg='blue',command=lambda: sinpress(),font=('Helvetica 20 bold'),activebackground='lightblue',activeforeground='darkgreen')
+    buttonsin.place(x=400,y=500,width=200,height=100)
+    buttoncos=tkinter.Button(disp,text='cos()',fg='white',bg='blue',command=lambda: cospress(),font=('Helvetica 20 bold'),activebackground='lightblue',activeforeground='darkgreen')
+    buttoncos.place(x=600,y=500,width=200,height=100)
+    disp.mainloop()
